@@ -4,7 +4,14 @@ class AuthenticatedController < ApplicationController
   protected
 
     def authenticate_user
-      authenticate_token || render_unauthorized
+      authenticate_cookie || authenticate_token || render_unauthorized
+    end
+
+    def authenticate_cookie
+      token = cookies.signed[:token]
+      if token
+        @user = User.find_by(auth_token: token)
+      end
     end
 
     def authenticate_token

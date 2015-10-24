@@ -11,6 +11,7 @@ class UsersController < AuthenticatedController
     @user = User.find_by(email: params[:email])
 
     if @user && @user.authenticate(params[:password])
+      cookies.permanent.signed[:token] = @user.auth_token
       render "users/show"
     else
       render json: { errors: "Invalid username/password" }, status: 401

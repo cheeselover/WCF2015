@@ -38,5 +38,8 @@ module Api
         resource '*', headers: :any, methods: [:get, :put, :post, :patch, :delete, :options]
       end
     end
+
+    config.middleware.use ActionDispatch::Cookies
+    config.api_only = false
   end
 end

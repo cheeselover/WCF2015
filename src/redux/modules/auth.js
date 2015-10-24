@@ -1,3 +1,5 @@
+import { USER } from '../schema';
+
 const LOAD = 'hvz/auth/LOAD';
 const LOAD_SUCCESS = 'hvz/auth/LOAD_SUCCESS';
 const LOAD_FAIL = 'hvz/auth/LOAD_FAIL';
@@ -100,19 +102,21 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/loadAuth')
+    promise: (client) => client.get('/users/1'),
+    schema: USER
   };
 }
 
-export function login(username, password) {
+export function login(email, password) {
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
     promise: (client) => client.post('/users/login', {
       data: {
-        username: username,
+        email: email,
         password: password
       }
-    })
+    }),
+    schema: USER
   };
 }
 
@@ -123,14 +127,17 @@ export function logout() {
   };
 }
 
-export function register(username, password) {
+export function register(email, name, password, passwordConfirmation) {
   return {
     types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
     promise: (client) => client.post('/users', {
       data: {
-        username: username,
-        password: password
+        email: email,
+        name: name,
+        password: password,
+        password_confirmation: passwordConfirmation
       }
-    })
+    }),
+    schema: USER
   };
 }
