@@ -1,1 +1,6 @@
-json.partial! 'users/user', collection: @users, as: :user
+json.array! @users do |user|
+  json.partial! 'users/user', user: user, locals: {
+    show_token: false,
+    show_participations: true
+  }
+end

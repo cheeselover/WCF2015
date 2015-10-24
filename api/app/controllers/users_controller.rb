@@ -1,5 +1,5 @@
 class UsersController < AuthenticatedController
-  before_action :authenticate_user, only: [:update, :destroy]
+  before_action :authenticate_user, only: [:me, :update, :destroy]
 
   # GET /users/:id
   def show
@@ -28,6 +28,11 @@ class UsersController < AuthenticatedController
     else
       render json: { errors: "Invalid username/password" }, status: 401
     end
+  end
+
+  # GET /users/me
+  def me
+    render "users/login"
   end
 
   # POST /users

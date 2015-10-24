@@ -75,12 +75,6 @@ class GamesController < AuthenticatedController
     end
   end
 
-  # DELETE /games/:id
-  def destroy
-    @game.destroy
-    head :no_content
-  end
-
   private
 
     def game_params

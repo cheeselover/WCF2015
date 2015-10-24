@@ -1,1 +1,4 @@
-json.partial! 'users/user', user: @user, show_token: true, show_games: true
+json.partial! 'users/user', user: @user, locals: {
+  show_token: true,
+  show_participations: true
+}

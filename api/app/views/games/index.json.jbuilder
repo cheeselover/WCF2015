@@ -1,1 +1,5 @@
-json.partial! 'games/game', collection: @games, as: :game
+json.array! @games do |game|
+  json.partial! 'games/game', game: game, locals: {
+    show_participations: true
+  }
+end
