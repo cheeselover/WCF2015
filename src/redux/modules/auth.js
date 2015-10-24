@@ -102,7 +102,7 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/users/1'),
+    promise: (client) => client.get('/users/me'),
     schema: USER
   };
 }
@@ -123,7 +123,7 @@ export function login(email, password) {
 export function logout() {
   return {
     types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: (client) => client.get('/logout')
+    promise: (client) => client.del('/users/logout')
   };
 }
 

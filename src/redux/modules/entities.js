@@ -2,7 +2,8 @@ import merge from 'lodash/object/merge';
 
 const initialState = {
   users: {},
-  games: {}
+  games: {},
+  participations: {}
 };
 
 export default function reducer(state = initialState, action = {}) {

@@ -35,12 +35,19 @@ class UsersController < AuthenticatedController
     render "users/login"
   end
 
+  # DELETE /users/logout
+  def logout
+    cookies.delete :token
+    head :ok
+  end
+
   # POST /users
   def create
     valid_params = params.permit(:name, :email, :password, :password_confirmation)
     @user = User.new(valid_params)
 
     if @user.save
+      cookies.permanent.signed[:token] = @user.auth_token
       render "users/login"
     else
       render errors(@user)
