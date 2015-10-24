@@ -1,1 +1,1 @@
-json.partial! 'posts/post', collection: @posts, as: :post
+json.partial! 'games/game', collection: @games, as: :game

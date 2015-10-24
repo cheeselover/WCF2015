@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151024173005) do
+ActiveRecord::Schema.define(version: 20151024175739) do
 
   create_table "games", force: :cascade do |t|
     t.string   "title"
@@ -23,13 +23,14 @@ ActiveRecord::Schema.define(version: 20151024173005) do
     t.datetime "updated_at",  null: false
   end
 
-  create_table "participations", id: false, force: :cascade do |t|
+  create_table "participations", force: :cascade do |t|
     t.integer  "game_id"
     t.integer  "user_id"
     t.string   "user_type"
     t.datetime "stun_end_time"
     t.integer  "num_kills"
     t.string   "weapon"
+    t.boolean  "active"
   end
 
   add_index "participations", ["game_id"], name: "index_participations_on_game_id"

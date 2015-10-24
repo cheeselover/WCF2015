@@ -1,1 +1,1 @@
-json.partial! 'users/user', user: @user, show_token: false
+json.partial! 'users/user', user: @user, show_games: true

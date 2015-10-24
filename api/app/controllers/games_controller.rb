@@ -1,6 +1,6 @@
 class GamesController < AuthenticatedController
-  before_action :authenticate_user, only: [:create, :update, :destroy]
-  before_action :set_game, only: [:update, :destroy]
+  before_action :authenticate_user, only: [:join, :leave, :create, :update, :destroy]
+  before_action :set_game, only: [:join, :leave, :update, :destroy]
 
   # GET /games
   def index
@@ -31,6 +31,41 @@ class GamesController < AuthenticatedController
     end
   end
 
+  # POST /games/:id
+  def join
+    @participation = @game.participations.find_by(user_id: current_user.id)
+
+    if @participation
+      if @participation.active
+        render json: { errors: "You are already an active player in this game!" }, status: :unprocessable_entity
+      else
+        @participation.active = true
+        @participation.save
+        render "participations/show"
+      end
+    else
+      @participation = Participation.create(
+        user: current_user,
+        game: @game,
+        user_type: "human",
+        weapon: params[:weapon] || "unarmed",
+        active: true
+      )
+      render "participations/show"
+    end
+  end
+
+  # DELETE /games/:id
+  def leave
+    @participation = @game.participations.find_by(user_id: current_user.id)
+
+    if @participation
+      @participation.active = false
+      @participation.save
+      render "participations/show"
+    end
+  end
+
   # PATCH/PUT /games/:id
   def update
     if @game.update(game_params)
@@ -53,7 +88,7 @@ class GamesController < AuthenticatedController
     end
 
     def set_game
-      @game = current_user.games.find_by(id: params[:id])
+      @game = current_user.games.find_by(id: params[:id] || params[:game_id])
 
       unless @game
         render model_not_found_error "Game"

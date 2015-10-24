@@ -12,6 +12,12 @@ class UsersController < AuthenticatedController
     end
   end
 
+  # GET /users
+  def index
+    @users = User.all
+    render "users/index"
+  end
+
   # POST /users/login
   def login
     @user = User.find_by(email: params[:email])
