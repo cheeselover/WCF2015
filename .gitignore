@@ -87,7 +87,7 @@ bower.json
 *.class
 
 # Generated files
-bin/
+android/bin/
 gen/
 
 # Gradle files
