@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import DocumentMeta from 'react-document-meta';
 import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
-import { InfoBar } from 'components';
 import { pushState } from 'redux-router';
 import config from '../../config';
 
@@ -71,7 +70,7 @@ export default class App extends Component {
           <div className="container">
             <NavbarLink to="/" className="navbar-brand" component={IndexLink}>
               <div className={styles.brand}/>
-              React Redux Example
+              Humans vs Zombies
             </NavbarLink>
 
             <ul className="nav navbar-nav">
@@ -80,29 +79,20 @@ export default class App extends Component {
               <li><NavbarLink to="/widgets">Widgets</NavbarLink></li>
               <li><NavbarLink to="/survey">Survey</NavbarLink></li>
               <li><NavbarLink to="/about">About Us</NavbarLink></li>
-              {!user && <li><NavbarLink to="/login">Login</NavbarLink></li>}
-              {user && <li className="logout-link"><a href="/logout" onClick={::this.handleLogout}>Logout</a></li>}
             </ul>
             {user &&
             <p className={styles.loggedInMessage + ' navbar-text'}>Logged in as <strong>{user.name}</strong>.</p>}
             <ul className="nav navbar-nav navbar-right">
               <li>
-                <a href="https://github.com/erikras/react-redux-universal-hot-example"
-                   target="_blank" title="View on Github"><i className="fa fa-github"/></a>
+                {!user && <NavbarLink to="/login">Login</NavbarLink>}
+                {user && <a href="/logout" onClick={::this.handleLogout}>Logout</a>}
               </li>
+              {!user && <li><NavbarLink to="/register">Register</NavbarLink></li>}
             </ul>
           </div>
         </nav>
         <div className={styles.appContent}>
           {this.props.children}
-        </div>
-        <InfoBar/>
-
-        <div className="well text-center">
-          Have questions? Ask for help <a
-          href="https://github.com/erikras/react-redux-universal-hot-example/issues"
-          target="_blank">on Github</a> or in the <a
-          href="https://discordapp.com/channels/102860784329052160/105739309289623552" target="_blank">#react-redux-universal</a> Discord channel.
         </div>
       </div>
     );

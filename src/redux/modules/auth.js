@@ -1,12 +1,15 @@
-const LOAD = 'redux-example/auth/LOAD';
-const LOAD_SUCCESS = 'redux-example/auth/LOAD_SUCCESS';
-const LOAD_FAIL = 'redux-example/auth/LOAD_FAIL';
-const LOGIN = 'redux-example/auth/LOGIN';
-const LOGIN_SUCCESS = 'redux-example/auth/LOGIN_SUCCESS';
-const LOGIN_FAIL = 'redux-example/auth/LOGIN_FAIL';
-const LOGOUT = 'redux-example/auth/LOGOUT';
-const LOGOUT_SUCCESS = 'redux-example/auth/LOGOUT_SUCCESS';
-const LOGOUT_FAIL = 'redux-example/auth/LOGOUT_FAIL';
+const LOAD = 'hvz/auth/LOAD';
+const LOAD_SUCCESS = 'hvz/auth/LOAD_SUCCESS';
+const LOAD_FAIL = 'hvz/auth/LOAD_FAIL';
+const LOGIN = 'hvz/auth/LOGIN';
+const LOGIN_SUCCESS = 'hvz/auth/LOGIN_SUCCESS';
+const LOGIN_FAIL = 'hvz/auth/LOGIN_FAIL';
+const LOGOUT = 'hvz/auth/LOGOUT';
+const LOGOUT_SUCCESS = 'hvz/auth/LOGOUT_SUCCESS';
+const LOGOUT_FAIL = 'hvz/auth/LOGOUT_FAIL';
+const REGISTER = 'hvz/auth/REGISTER';
+const REGISTER_SUCCESS = 'hvz/auth/REGISTER_SUCCESS';
+const REGISTER_FAIL = 'hvz/auth/REGISTER_FAIL';
 
 const initialState = {
   loaded: false
@@ -68,6 +71,23 @@ export default function reducer(state = initialState, action = {}) {
         loggingOut: false,
         logoutError: action.error
       };
+    case REGISTER:
+      return {
+        ...state,
+        registering: true
+      };
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        registering: false,
+        user: action.result
+      };
+    case REGISTER_FAIL:
+      return {
+        ...state,
+        registering: false,
+        registeringError: action.error
+      };
     default:
       return state;
   }
@@ -84,12 +104,13 @@ export function load() {
   };
 }
 
-export function login(name) {
+export function login(username, password) {
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
-    promise: (client) => client.post('/login', {
+    promise: (client) => client.post('/users/login', {
       data: {
-        name: name
+        username: username,
+        password: password
       }
     })
   };
@@ -99,5 +120,17 @@ export function logout() {
   return {
     types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
     promise: (client) => client.get('/logout')
+  };
+}
+
+export function register(username, password) {
+  return {
+    types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
+    promise: (client) => client.post('/users', {
+      data: {
+        username: username,
+        password: password
+      }
+    })
   };
 }
