@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  resources :users, except: [:index, :new, :edit]
-  post 'users/login', to: 'users#login'
   get 'users/me', to: 'users#me'
+  post 'users/login', to: 'users#login'
+  resources :users, except: [:index, :new, :edit]
 
   resources :games, except: [:new, :edit] do
     post '', to: 'games#join'
