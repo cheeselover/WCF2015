@@ -10,9 +10,12 @@ class ApplicationController < ActionController::API
 
   protected
 
-    def errors_as_json(model)
+    def errors(model)
       { json: { errors: model.errors.full_messages }, status: :unprocessable_entity }
     end
 
+    def model_not_found_error(model_name)
+      { json: { errors: "Could not find #{model_name} with given id" }, status: :unprocessable_entity }
+    end
 end
 

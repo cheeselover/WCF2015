@@ -109,3 +109,4 @@ proguard/
 ### Android Patch ###
 gen-external-apklibs
 
+*.swp

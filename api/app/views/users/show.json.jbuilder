@@ -1,1 +1,1 @@
-json.partial! @user, as: :user
+json.partial! 'users/user', user: @user, show_token: false

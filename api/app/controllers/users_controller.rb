@@ -1,9 +1,15 @@
 class UsersController < AuthenticatedController
-  before_action :authenticate_user, only: [:show, :update, :destroy]
+  before_action :authenticate_user, only: [:update, :destroy]
 
   # GET /users/:id
   def show
-    render "users/show"
+    @user = User.find_by(id: params[:id])
+
+    if @user
+      render "users/show"
+    else
+      render model_not_found_error "User"
+    end
   end
 
   # POST /users/login
@@ -24,9 +30,9 @@ class UsersController < AuthenticatedController
     @user = User.new(valid_params)
 
     if @user.save
-      render "users/show"
+      render "users/login"
     else
-      render errors_as_json(@user)
+      render errors(@user)
     end
   end
 
@@ -34,16 +40,16 @@ class UsersController < AuthenticatedController
   def update
     valid_params = params.permit(:email, :password, :password_confirmation)
 
-    if @user.update(valid_params)
+    if current_user.update(valid_params)
       head :no_content
     else
-      render errors_as_json(@user)
+      render errors(current_user)
     end
   end
 
   # DELETE /users/:id
   def destroy
-    @user.destroy
+    current_user.destroy
     head :no_content
   end
 end
