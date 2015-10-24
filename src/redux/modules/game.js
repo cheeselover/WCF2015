@@ -1,4 +1,4 @@
-import GAME from '../schema';
+import { GAME } from '../schema';
 
 const CREATE = 'hvz/game/CREATE';
 const CREATE_SUCCESS = 'hvz/game/CREATE_SUCCESS';
@@ -26,6 +26,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
+        lastCreated: action.result.id
       };
     case CREATE_FAILURE:
     case LOAD_FAILURE:
@@ -60,4 +61,8 @@ export function load(id) {
     promise: (client) => client.get(`/games/${id}`),
     schema: GAME
   };
+}
+
+export function isLoaded(state, id) {
+  return !!state.entities.games[id];
 }

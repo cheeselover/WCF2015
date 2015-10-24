@@ -2,6 +2,7 @@ export About from './About/About';
 export App from './App/App';
 export Chat from './Chat/Chat';
 export CreateGame from './CreateGame/CreateGame';
+export Game from './Game/Game';
 export Games from './Games/Games';
 export Home from './Home/Home';
 export Login from './Login/Login';

@@ -5,6 +5,7 @@ import {
     About,
     App,
     CreateGame,
+    Game,
     Games,
     Home,
     Login,
@@ -42,12 +43,15 @@ export default (store) => {
       { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
         <Route path="loginSuccess" component={LoginSuccess}/>
-        <Route path="games/create" component={CreateGame}/>
       </Route>
 
       { /* Routes */ }
       <Route path="about" component={About}/>
-      <Route path="games" component={Games}/>
+      <Route path="games">
+        <IndexRoute component={Games}/>
+        <Route path="create" onEnter={requireLogin} component={CreateGame}/>
+        <Route path=":id" component={Game}/>
+      </Route>
       <Route path="login" component={Login}/>
       <Route path="register" component={Register}/>
 
