@@ -42,7 +42,7 @@ class GamesController < AuthenticatedController
       else
         @participation.active = true
         @participation.save
-        render "participations/show"
+        render "games/show"
       end
     else
       @participation = Participation.create(
@@ -52,7 +52,7 @@ class GamesController < AuthenticatedController
         weapon: params[:weapon] || "unarmed",
         active: true
       )
-      render "participations/show"
+      render "games/show"
     end
   end
 
