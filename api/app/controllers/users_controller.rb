@@ -18,7 +18,7 @@ class UsersController < AuthenticatedController
 
     if @user && @user.authenticate(params[:password])
       cookies.permanent.signed[:token] = @user.auth_token
-      render "users/show"
+      render "users/login"
     else
       render json: { errors: "Invalid username/password" }, status: 401
     end
