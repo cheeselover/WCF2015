@@ -1,6 +1,6 @@
 class GamesController < AuthenticatedController
   before_action :authenticate_user, only: [:join, :leave, :create, :update, :destroy]
-  before_action :set_game, only: [:join, :leave, :update, :destroy]
+  before_action :set_game, only: [:leave, :update, :destroy]
 
   # GET /games
   def index
@@ -33,6 +33,7 @@ class GamesController < AuthenticatedController
 
   # POST /games/:id
   def join
+    @game = Game.find_by(id: params[:game_id])
     @participation = @game.participations.find_by(user_id: current_user.id)
 
     if @participation
