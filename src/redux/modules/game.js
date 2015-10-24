@@ -15,6 +15,9 @@ const JOIN_FAILURE = 'hvz/game/JOIN_FAILURE';
 const LEAVE = 'hvz/game/LEAVE';
 const LEAVE_SUCCESS = 'hvz/game/LEAVE_SUCCESS';
 const LEAVE_FAILURE = 'hvz/game/LEAVE_FAILURE';
+const UPDATE = 'hvz/game/UPDATE';
+const UPDATE_SUCCESS = 'hvz/game/UPDATE_SUCCESS';
+const UPDATE_FAILURE = 'hvz/game/UPDATE_FAILURE';
 
 const initialState = {
   loading: false,
@@ -28,6 +31,7 @@ export default function reducer(state = initialState, action = {}) {
     case LOAD_ALL:
     case JOIN:
     case LEAVE:
+    case UPDATE:
       return {
         ...state,
         loading: true,
@@ -38,6 +42,7 @@ export default function reducer(state = initialState, action = {}) {
     case LOAD_ALL_SUCCESS:
     case JOIN_SUCCESS:
     case LEAVE_SUCCESS:
+    case UPDATE_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -48,6 +53,7 @@ export default function reducer(state = initialState, action = {}) {
     case LOAD_ALL_FAILURE:
     case JOIN_FAILURE:
     case LEAVE_FAILURE:
+    case UPDATE_FAILURE:
       return {
         ...state,
         loading: false,
@@ -58,15 +64,15 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function create(title, description, start, end) {
+export function create(title, description, startTime, endTime) {
   return {
     types: [CREATE, CREATE_SUCCESS, CREATE_FAILURE],
     promise: (client) => client.post('/games', {
       data: {
         title,
         description,
-        start_time: start,
-        end_time: end
+        start_time: startTime,
+        end_time: endTime
       }
     }),
     schema: GAME
@@ -102,6 +108,30 @@ export function leave(id) {
     types: [LEAVE, LEAVE_SUCCESS, LEAVE_FAILURE],
     promise: (client) => client.del(`/games/${id}`),
     schema: PARTICIPATION
+  };
+}
+
+export function start(id) {
+  return {
+    types: [UPDATE, UPDATE_SUCCESS, UPDATE_FAILURE],
+    promise: (client) => client.patch(`/games/${id}`, {
+      data: {
+        running: true
+      }
+    }),
+    schema: GAME
+  };
+}
+
+export function stop(id) {
+  return {
+    types: [UPDATE, UPDATE_SUCCESS, UPDATE_FAILURE],
+    promise: (client) => client.patch(`/games/${id}`, {
+      data: {
+        running: false
+      }
+    }),
+    schema: GAME
   };
 }
 

@@ -1,4 +1,4 @@
-json.(game, :id, :title, :organizer, :description, :start_time, :end_time)
+json.(game, :id, :title, :organizer, :description, :start_time, :end_time, :running)
 
 if locals[:show_participations]
   json.participations game.participations do |participation|

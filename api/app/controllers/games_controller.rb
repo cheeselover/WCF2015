@@ -74,8 +74,18 @@ class GamesController < AuthenticatedController
 
   # PATCH/PUT /games/:id
   def update
+    was_running = @game.running
     if @game.update(game_params)
-      head :no_content
+      if @game.running && !was_running
+        puts "now running"
+        players = @game.participations.where.not(user_type: 'creator')
+        zombie = rand players.count
+        players.each_with_index do |participation, index|
+          participation.user_type = index == zombie ? 'zombie' : 'human'
+          participation.save
+        end
+      end
+      render "games/show"
     else
       render errors(@game)
     end
@@ -84,7 +94,7 @@ class GamesController < AuthenticatedController
   private
 
     def game_params
-      params.permit(:title, :organizer, :description, :start_time, :end_time)
+      params.permit(:title, :organizer, :description, :start_time, :end_time, :running)
     end
 
     def set_game

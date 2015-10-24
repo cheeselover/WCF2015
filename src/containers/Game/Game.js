@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { isLoaded, load, join, leave } from 'redux/modules/game';
+import { isLoaded, load, join, leave, start, stop } from 'redux/modules/game';
 import findWhere from 'lodash/collection/findWhere';
 import { Participation } from 'components';
 
@@ -14,7 +14,7 @@ import { Participation } from 'components';
       user: state.auth.user
     };
   },
-  {join, leave}
+  {join, leave, start, stop}
 )
 export default class Game extends Component {
   static propTypes = {
@@ -23,6 +23,8 @@ export default class Game extends Component {
     participations: PropTypes.object,
     join: PropTypes.func,
     leave: PropTypes.func,
+    start: PropTypes.func,
+    end: PropTypes.func,
     users: PropTypes.object
   }
 
@@ -32,12 +34,8 @@ export default class Game extends Component {
     }
   }
 
-  join() {
-    this.props.join(this.props.game.id);
-  }
-
-  leave() {
-    this.props.leave(this.props.game.id);
+  action(name) {
+    this.props[name](this.props.game.id);
   }
 
   renderJoinLeaveButton() {
@@ -45,9 +43,12 @@ export default class Game extends Component {
     if (user) {
       const participation = findWhere(participations, {user: user.id, game: game.id});
       if (participation && participation.active) {
-        return <button className="btn btn-warning" onClick={::this.leave}>Leave Game</button>;
+        return <button className="btn btn-danger" onClick={this.action.bind(this, 'leave')}>Leave Game</button>;
+      } else if (participation && participation.userType === 'creator') {
+        if (game.running) return <button className="btn btn-danger" onClick={this.action.bind(this, 'stop')}>End Game</button>;
+        return <button className="btn btn-success" onClick={this.action.bind(this, 'start')}>Start Game</button>;
       }
-      return <button className="btn btn-primary" onClick={::this.join}>Join Game</button>;
+      return <button className="btn btn-primary" onClick={this.action.bind(this, 'join')}>Join Game</button>;
     }
   }
 
@@ -61,10 +62,12 @@ export default class Game extends Component {
   }
 
   render() {
+    const { game } = this.props;
+    const { title, description, running } = game;
     return (
       <div className="container">
-        <h1>{this.props.game.title} {this.renderJoinLeaveButton()}</h1>
-        <p>{this.props.game.description}</p>
+        <h1>{title} <small>{running ? 'Game is in progress' : 'Game has not yet started'}</small> {this.renderJoinLeaveButton()}</h1>
+        <p>{description}</p>
         <ul>
           {this.renderParticipants()}
         </ul>
