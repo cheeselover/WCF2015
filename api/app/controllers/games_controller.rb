@@ -34,25 +34,30 @@ class GamesController < AuthenticatedController
   # POST /games/:id
   def join
     @game = Game.find_by(id: params[:game_id])
-    @participation = @game.participations.find_by(user_id: current_user.id)
 
-    if @participation
-      if @participation.active
-        render json: { errors: "You are already an active player in this game!" }, status: :unprocessable_entity
+    if @game
+      @participation = @game.participations.find_by(user_id: current_user.id)
+
+      if @participation
+        if @participation.active
+          render json: { errors: "You are already an active player in this game!" }, status: :unprocessable_entity
+        else
+          @participation.active = true
+          @participation.save
+          render "games/show"
+        end
       else
-        @participation.active = true
-        @participation.save
+        @participation = Participation.create(
+          user: current_user,
+          game: @game,
+          user_type: "human",
+          weapon: params[:weapon] || "unarmed",
+          active: true
+        )
         render "games/show"
       end
     else
-      @participation = Participation.create(
-        user: current_user,
-        game: @game,
-        user_type: "human",
-        weapon: params[:weapon] || "unarmed",
-        active: true
-      )
-      render "games/show"
+      render model_not_found_error "Game"
     end
   end
 

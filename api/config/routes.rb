@@ -8,4 +8,6 @@ Rails.application.routes.draw do
     post '', to: 'games#join'
     delete '', to: 'games#leave'
   end
+
+  resources :participations, only: [:update]
 end

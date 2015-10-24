@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151024175739) do
+ActiveRecord::Schema.define(version: 20151024203339) do
+
+  create_table "events", force: :cascade do |t|
+    t.integer  "attacker_id"
+    t.integer  "defender_id"
+    t.string   "event_type"
+    t.decimal  "latitude"
+    t.decimal  "longitude"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "events", ["attacker_id"], name: "index_events_on_attacker_id"
+  add_index "events", ["defender_id"], name: "index_events_on_defender_id"
 
   create_table "games", force: :cascade do |t|
     t.string   "title"
@@ -24,13 +37,13 @@ ActiveRecord::Schema.define(version: 20151024175739) do
   end
 
   create_table "participations", force: :cascade do |t|
-    t.integer  "game_id"
-    t.integer  "user_id"
-    t.string   "user_type"
-    t.datetime "stun_end_time"
-    t.integer  "num_kills"
-    t.string   "weapon"
-    t.boolean  "active"
+    t.integer "game_id"
+    t.integer "user_id"
+    t.string  "user_type"
+    t.string  "stun_end_time"
+    t.integer "num_kills"
+    t.string  "weapon"
+    t.boolean "active"
   end
 
   add_index "participations", ["game_id"], name: "index_participations_on_game_id"
