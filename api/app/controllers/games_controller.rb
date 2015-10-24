@@ -24,6 +24,7 @@ class GamesController < AuthenticatedController
     @game = current_user.games.build(game_params)
 
     if @game.save
+      Participation.create(user: current_user, game: @game, user_type: "creator")
       render "games/show"
     else
       render errors(@game)
