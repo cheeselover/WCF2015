@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151024212517) do
+ActiveRecord::Schema.define(version: 20151024225801) do
 
   create_table "events", force: :cascade do |t|
     t.integer  "attacker_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20151024212517) do
     t.decimal  "longitude"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.integer  "game_id"
   end
 
   add_index "events", ["attacker_id"], name: "index_events_on_attacker_id"

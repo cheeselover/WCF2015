@@ -19,6 +19,18 @@ class GamesController < AuthenticatedController
     end
   end
 
+  # GET /games/:game_id/events
+  def events
+    @game = Game.find_by(id: params[:game_id])
+
+    if @game
+      @events = @game.events
+      render "events/index"
+    else
+      render model_not_found_error("Game")
+    end
+  end
+
   # POST /games
   def create
     @game = current_user.games.build(game_params)

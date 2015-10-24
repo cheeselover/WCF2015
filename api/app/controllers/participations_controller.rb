@@ -5,6 +5,7 @@ class ParticipationsController < AuthenticatedController
   # PUT /participations/:id/
   def update
     Event.create(
+      game: @defender.game
       attacker: current_user,
       defender: @defender.user,
       event_type: (@defender.user_type == "human") ? "kill" : "stun"

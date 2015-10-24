@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :games, except: [:new, :edit] do
     post '', to: 'games#join'
     delete '', to: 'games#leave'
+    get 'events', to: 'games#events'
   end
 
   resources :participations, only: [:update]
