@@ -37,20 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         mUserService = HumansVsZombies.getUserService();
         mSharedPreferences = getSharedPreferences("es.humansvszombi.humansvszombies", MODE_PRIVATE);
         if (mSharedPreferences.contains("token")) {
-            String token = mSharedPreferences.getString("token", "");
-            mUserService.me("Token " + token).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Response<User> response, Retrofit retrofit) {
-                    HumansVsZombies.setCurrentUser(response.body());
-                    Log.d("LoginActivity", "Logged in with store token");
-                    startMain();
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.e("LoginActivity", "Error fetching me with token", t);
-                }
-            });
+            startMain();
         }
     }
 
@@ -66,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<User> response, Retrofit retrofit) {
                 User me = response.body();
-                HumansVsZombies.setCurrentUser(me);
+                HumansVsZombies.setCurrentUserAuthToken(me.getAuthToken());
                 mSharedPreferences.edit().putString("token", me.getAuthToken()).apply();
                 Log.d("LoginActivity", "Logged in with username/password");
                 startMain();
