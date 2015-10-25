@@ -4,9 +4,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,16 +16,17 @@ import android.util.Log;
 import android.widget.TextView;
 
 import org.ndeftools.Message;
+import org.ndeftools.Record;
 import org.ndeftools.externaltype.AndroidApplicationRecord;
 import org.ndeftools.externaltype.ExternalTypeRecord;
 import org.ndeftools.externaltype.GenericExternalTypeRecord;
 
 import java.nio.charset.Charset;
+import java.util.List;
 
-public class HelloWorldNFCActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
-    /** Called when the activity is first created. */
+public class BeamActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
-    private static String TAG = HelloWorldNFCActivity.class.getName();
+    private static String TAG = BeamActivity.class.getName();
 
     protected NfcAdapter nfcAdapter;
     protected PendingIntent nfcPendingIntent;
@@ -31,8 +34,6 @@ public class HelloWorldNFCActivity extends AppCompatActivity implements NfcAdapt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d(TAG, "onCreate");
 
         setContentView(R.layout.nfc);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -56,7 +57,7 @@ public class HelloWorldNFCActivity extends AppCompatActivity implements NfcAdapt
 
         Log.d(TAG, "onResume");
 
-        // enableForegroundMode(); // task 2
+         enableForegroundMode(); // task 2
     }
 
     @Override
@@ -65,7 +66,7 @@ public class HelloWorldNFCActivity extends AppCompatActivity implements NfcAdapt
 
         Log.d(TAG, "onPause");
 
-        // disableForegroundMode(); // task 2
+         disableForegroundMode(); // task 2
     }
 
     @Override
@@ -75,6 +76,24 @@ public class HelloWorldNFCActivity extends AppCompatActivity implements NfcAdapt
             TextView textView = (TextView) findViewById(R.id.nfc_text);
             textView.setText("hello nfc");
             vibrate();
+        }
+
+        Parcelable[] messages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        if (messages != null) {
+            NdefMessage ndefMessage = (NdefMessage) messages[0];
+            try {
+                List<Record> records = new Message(ndefMessage);
+                for(Record record : records) {
+                    Log.d("record", "found record " + record.getKey() + " of class " + record.getClass().getName());
+                    if (record instanceof GenericExternalTypeRecord) {
+                        GenericExternalTypeRecord externalTypeRecord = (GenericExternalTypeRecord) record;
+                        String data = new String(externalTypeRecord.getData(), Charset.forName("UTF-8"));
+                        Log.d("record", "got data: " + data);
+                    }
+                }
+            } catch (FormatException e) {
+                e.printStackTrace();
+            }
         }
     }
 
