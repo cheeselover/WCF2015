@@ -66,7 +66,7 @@ public class HumansVsZombies extends Application {
                 }
             });
             sRetrofit = new Retrofit.Builder()
-                    .baseUrl("http://172.31.11.155:3000")
+                    .baseUrl("http://172.31.11.157:3000")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client)
                     .build();

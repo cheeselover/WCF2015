@@ -30,6 +30,7 @@ public class BeamActivity extends AppCompatActivity implements NfcAdapter.Create
 
     protected NfcAdapter nfcAdapter;
     protected PendingIntent nfcPendingIntent;
+    protected int mParticipationId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,16 +40,9 @@ public class BeamActivity extends AppCompatActivity implements NfcAdapter.Create
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, this.getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         nfcAdapter.setNdefPushMessageCallback(this, this);
-    }
-
-    public void enableForegroundMode() {
-        IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-        IntentFilter[] writeTagFilters = new IntentFilter[]{tagDetected};
-        nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, writeTagFilters, null);
-    }
-
-    public void disableForegroundMode() {
-        nfcAdapter.disableForegroundDispatch(this);
+        if (getIntent().getExtras().containsKey("participationId")) {
+            mParticipationId = getIntent().getExtras().getInt("participationId");
+        }
     }
 
     @Override
@@ -56,8 +50,6 @@ public class BeamActivity extends AppCompatActivity implements NfcAdapter.Create
         super.onResume();
 
         Log.d(TAG, "onResume");
-
-         enableForegroundMode(); // task 2
     }
 
     @Override
@@ -65,36 +57,6 @@ public class BeamActivity extends AppCompatActivity implements NfcAdapter.Create
         super.onPause();
 
         Log.d(TAG, "onPause");
-
-         disableForegroundMode(); // task 2
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) { // task 2 and 3
-        Log.d(TAG, "onNewIntent");
-        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            TextView textView = (TextView) findViewById(R.id.nfc_text);
-            textView.setText("hello nfc");
-            vibrate();
-        }
-
-        Parcelable[] messages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        if (messages != null) {
-            NdefMessage ndefMessage = (NdefMessage) messages[0];
-            try {
-                List<Record> records = new Message(ndefMessage);
-                for(Record record : records) {
-                    Log.d("record", "found record " + record.getKey() + " of class " + record.getClass().getName());
-                    if (record instanceof GenericExternalTypeRecord) {
-                        GenericExternalTypeRecord externalTypeRecord = (GenericExternalTypeRecord) record;
-                        String data = new String(externalTypeRecord.getData(), Charset.forName("UTF-8"));
-                        Log.d("record", "got data: " + data);
-                    }
-                }
-            } catch (FormatException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -106,7 +68,7 @@ public class BeamActivity extends AppCompatActivity implements NfcAdapter.Create
         AndroidApplicationRecord aar = new AndroidApplicationRecord("es.humansvszombi.humansvszombies");
         message.add(aar);
 
-        ExternalTypeRecord record = new GenericExternalTypeRecord("es.humansvszombi.humansvszombies.participation", "participation", "This is my magic payload".getBytes(Charset.forName("UTF-8")));
+        ExternalTypeRecord record = new GenericExternalTypeRecord("es.humansvszombi.humansvszombies.participation", "participation", ("" + mParticipationId).getBytes(Charset.forName("UTF-8")));
         message.add(record);
 
         return message.getNdefMessage();

@@ -5,7 +5,7 @@ class ParticipationsController < AuthenticatedController
   # PUT /participations/:id/
   def update
     Event.create(
-      game: @defender.game
+      game: @defender.game,
       attacker: current_user,
       defender: @defender.user,
       event_type: (@defender.user_type == "human") ? "kill" : "stun"
@@ -14,7 +14,7 @@ class ParticipationsController < AuthenticatedController
 
     if @attacker.user_type == "zombie"
       @defender.user_type = "zombie"
-      @defender.weapon = nil;
+      @defender.weapon = nil
       @defender.save
       # somehow handle updating of number of kills
     elsif @attacker.user_type == "human" and @defender.user_type == "zombie"

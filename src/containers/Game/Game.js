@@ -68,6 +68,10 @@ export default class Game extends Component {
       <div className="container">
         <h1>{title} <small>{running ? 'Game is in progress' : 'Game has not yet started'}</small> {this.renderJoinLeaveButton()}</h1>
         <p>{description}</p>
+        <ul className="nav nav-tabs">
+          <li className={@state.tab === 'participants' ? 'active' : ''}><a onClick={this.switchTab.bind(this, 'participants')}>Participants</a></li>
+          <li className={@state.tab === 'events' ? 'active' : ''}><a onClick={this.switchTab.bind(this, 'events')}>Events</a></li>
+        </ul>
         <ul>
           {this.renderParticipants()}
         </ul>
