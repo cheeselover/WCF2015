@@ -12,6 +12,23 @@ class UsersController < AuthenticatedController
     end
   end
 
+  # GET /users/:user_id/active_game
+  def active_game
+    @user = User.find_by(id: params[:user_id])
+
+    if @user
+      @participation = @user.participations.where(active: true).first
+
+      if @participation
+        render "participations/show"
+      else
+        head :no_content
+      end
+    else
+      render model_not_found_error "User"
+    end
+  end
+
   # GET /users
   def index
     @users = User.all

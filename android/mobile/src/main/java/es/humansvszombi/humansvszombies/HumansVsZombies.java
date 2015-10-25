@@ -14,7 +14,10 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
+import es.humansvszombi.humansvszombies.models.Participation;
 import es.humansvszombi.humansvszombies.models.User;
+import es.humansvszombi.humansvszombies.services.ParticipationService;
+import es.humansvszombi.humansvszombies.services.UserService;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
@@ -24,6 +27,8 @@ import retrofit.Retrofit;
 public class HumansVsZombies extends Application {
     private static Retrofit sRetrofit;
     private static User sCurrentUser;
+    private static UserService mUserService;
+    private static ParticipationService mParticipationService;
 
     public static Retrofit getRetrofit() {
         if(sRetrofit == null) {
@@ -45,12 +50,26 @@ public class HumansVsZombies extends Application {
                 }
             });
             sRetrofit = new Retrofit.Builder()
-                    .baseUrl("http://172.31.11.157:3000")
+                    .baseUrl("http://74.216.251.77:3000")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client)
                     .build();
         }
         return sRetrofit;
+    }
+
+    public static UserService getUserService() {
+        if(mUserService == null) {
+            mUserService = getRetrofit().create(UserService.class);
+        }
+        return mUserService;
+    }
+
+    public static ParticipationService getParticipationService() {
+        if(mParticipationService == null) {
+            mParticipationService = getRetrofit().create(ParticipationService.class);
+        }
+        return mParticipationService;
     }
 
     public static User getCurrentUser() {

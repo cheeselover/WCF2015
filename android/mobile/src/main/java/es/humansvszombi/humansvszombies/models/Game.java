@@ -5,12 +5,11 @@ package es.humansvszombi.humansvszombies.models;
  */
 public class Game {
     private String title, organizer, description, startTime, endTime;
+    private int id;
 
     public int getId() {
         return id;
     }
-
-    private int id;
 
     public String getTitle() {
         return title;
